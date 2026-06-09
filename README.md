@@ -1,2 +1,6 @@
-# proyecto-final-redes-de-datos
-Repositorio que aloja el proyecto final de la materia Redes de Datos de la Tecnicatura Universitaria en Inteligencia Artificial
+# Proyecto Final Redes de Datos
+Esto repositorio aloja el proyecto final de la materia Redes de Datos de la Tecnicatura Universitaria en Inteligencia Artificial.
+
+## Librerias
+* FastAPI - versión: 0.115.8
+* Uvicorn - versión: 0.34.0
