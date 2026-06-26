@@ -3,8 +3,8 @@ from pathlib import Path
 
 from fastapi import HTTPException, status
 
-from config import DATABASE_DIR
-from schemas import Match
+from .config import DATABASE_DIR
+from .schemas import Match
 
 
 def get_json_files() -> list[Path]:

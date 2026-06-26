@@ -2,9 +2,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from dependencies import require_basic_auth
-from rate_limit_store import rate_limit_store
-from schemas import RateLimitConfig
+from ..dependencies import require_basic_auth
+from ..rate_limit_store import rate_limit_store
+from ..schemas import RateLimitConfig
 
 
 router = APIRouter(prefix="/rate-limit", tags=["rate-limit"])
