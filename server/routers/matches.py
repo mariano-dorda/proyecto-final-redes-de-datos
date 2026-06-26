@@ -12,6 +12,7 @@ router = APIRouter(prefix="/competitions/{season}/{league}/matches", tags=["matc
 
 @router.get("", response_model=list[Match])
 def list_matches(
+    response: Response,
     season: str,
     league: str,
     team: str | None = Query(default=None),
@@ -37,6 +38,10 @@ def list_matches(
     if date:
         matches = [match for match in matches if match.date == date]
 
+    total_count = len(matches)
+    response.headers["X-Total-Count"] = str(total_count)
+    response.headers["X-Limit"] = str(limit)
+    response.headers["X-Offset"] = str(offset)
     return matches[offset : offset + limit]
 
 

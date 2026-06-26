@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Response
 
 from ..data_access import (
     build_competition_descriptor,
@@ -15,8 +15,11 @@ router = APIRouter(prefix="/competitions", tags=["competitions"])
 
 @router.get("", response_model=list[CompetitionSummary])
 def list_competitions(
+    response: Response,
     season: str | None = Query(default=None),
     league: str | None = Query(default=None),
+    limit: int = Query(default=20, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
 ):
     competitions = [
         CompetitionSummary(**build_competition_descriptor(path))
@@ -28,7 +31,11 @@ def list_competitions(
     if league:
         competitions = [item for item in competitions if league.lower() in item.league.lower()]
 
-    return competitions
+    total_count = len(competitions)
+    response.headers["X-Total-Count"] = str(total_count)
+    response.headers["X-Limit"] = str(limit)
+    response.headers["X-Offset"] = str(offset)
+    return competitions[offset : offset + limit]
 
 
 @router.get("/{season}/{league}", response_model=CompetitionDetail)
