@@ -1,20 +1,14 @@
-import sys
 import time
-from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-CURRENT_DIR = Path(__file__).resolve().parent
-if str(CURRENT_DIR) not in sys.path:
-    sys.path.insert(0, str(CURRENT_DIR))
-
-from config import DATABASE_DIR
-from routers.competitions import router as competitions_router
-from routers.matches import router as matches_router
-from routers.rate_limit import router as rate_limit_router
-from rate_limit_store import rate_limit_store
+from .config import DATABASE_DIR
+from .rate_limit_store import rate_limit_store
+from .routers.competitions import router as competitions_router
+from .routers.matches import router as matches_router
+from .routers.rate_limit import router as rate_limit_router
 
 
 app = FastAPI(
@@ -71,4 +65,4 @@ def healthcheck():
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("server.main:app", host="0.0.0.0", port=8000, reload=True)

@@ -7,35 +7,23 @@ Esto repositorio aloja el proyecto final de la materia Redes de Datos de la Tecn
 
 ## Servidor API
 
-El servidor está implementado en [main.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/main.py) y expone una API REST sobre los archivos JSON ubicados en `database/matches`.
+La API REST expone los archivos JSON ubicados en `database/matches`.
 
-### Estructura
-
-- [main.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/main.py): arranque de la app, middleware y `healthcheck`.
-- [routers/competitions.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/routers/competitions.py): recurso `competitions`.
-- [routers/matches.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/routers/matches.py): recurso `matches`.
-- [routers/rate_limit.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/routers/rate_limit.py): recurso `rate-limit`.
-- [schemas.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/schemas.py): modelos Pydantic.
-- [data_access.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/data_access.py): lectura y escritura de JSON.
-- [dependencies.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/dependencies.py): autenticación Basic.
-- [config.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/config.py): configuración general.
-- [rate_limit_store.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/rate_limit_store.py): estado mutable del rate limit.
-
-### Ejecutar
+### Ejecutar servidor
 
 Desde la carpeta `TP/`:
 
 ```bash
-.venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+.venv/bin/python -m uvicorn server.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 También se puede ejecutar con:
 
 ```bash
-.venv/bin/python main.py
+.venv/bin/python -m server.main
 ```
 
-### Variables de entorno
+### Variables de entorno del servidor
 
 ```bash
 export API_BASIC_USER=admin

@@ -1,7 +1,13 @@
 from fastapi import APIRouter, Query
 
-from data_access import build_competition_descriptor, get_competition_path, get_json_files, materialize_matches, read_competition
-from schemas import CompetitionDetail, CompetitionSummary
+from ..data_access import (
+    build_competition_descriptor,
+    get_competition_path,
+    get_json_files,
+    materialize_matches,
+    read_competition,
+)
+from ..schemas import CompetitionDetail, CompetitionSummary
 
 
 router = APIRouter(prefix="/competitions", tags=["competitions"])

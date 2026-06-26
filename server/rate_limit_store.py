@@ -1,6 +1,6 @@
 from collections import defaultdict, deque
 
-from config import RATE_LIMIT_REQUESTS, RATE_LIMIT_WINDOW_SECONDS
+from .config import RATE_LIMIT_REQUESTS, RATE_LIMIT_WINDOW_SECONDS
 
 
 class RateLimitStore:

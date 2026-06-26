@@ -2,9 +2,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 
-from data_access import get_competition_path, materialize_matches, read_competition, write_competition
-from dependencies import require_basic_auth
-from schemas import Match, MatchCreate
+from ..data_access import get_competition_path, materialize_matches, read_competition, write_competition
+from ..dependencies import require_basic_auth
+from ..schemas import Match, MatchCreate
 
 
 router = APIRouter(prefix="/competitions/{season}/{league}/matches", tags=["matches"])
