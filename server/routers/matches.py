@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 
 from ..data_access import get_competition_path, materialize_matches, read_competition, write_competition
 from ..dependencies import require_basic_auth
-from ..schemas import Match, MatchCreate
+from ..schemas import Match, MatchCreate, MatchUpdate
 
 
 router = APIRouter(prefix="/competitions/{season}/{league}/matches", tags=["matches"])
@@ -73,6 +73,41 @@ def create_match(
     raw_matches.append(match.model_dump())
     write_competition(path, payload)
     return Match(match_id=len(raw_matches) - 1, **match.model_dump())
+
+
+@router.put("/{match_id}", response_model=Match)
+def update_match(
+    season: str,
+    league: str,
+    match_id: int,
+    match: MatchUpdate,
+    _: Annotated[str, Depends(require_basic_auth)],
+):
+    path = get_competition_path(season, league)
+    payload = read_competition(path)
+    raw_matches = payload.get("matches", [])
+
+    if match_id < 0 or match_id >= len(raw_matches):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No existe el partido con match_id={match_id}.",
+        )
+
+    current_match = raw_matches[match_id]
+    changes = match.model_dump(exclude_none=True)
+
+    if "score" in changes:
+        current_score = dict(current_match.get("score", {}))
+        current_score.update(changes["score"])
+        changes["score"] = current_score
+
+    updated_match = dict(current_match)
+    updated_match.update(changes)
+
+    raw_matches[match_id] = updated_match
+    payload["matches"] = raw_matches
+    write_competition(path, payload)
+    return Match(match_id=match_id, **updated_match)
 
 
 @router.delete("/{match_id}", status_code=status.HTTP_204_NO_CONTENT)
