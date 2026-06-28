@@ -6,6 +6,16 @@ Esto repositorio aloja el proyecto final de la materia Redes de Datos de la Tecn
 * Uvicorn - versión: 0.34.0
 * Requests - versión: 2.34.2
 
+## Dataset
+
+La carpeta `database/matches` no debe versionarse en Git. Para utilizar la API y el cliente primero hay que descargar el dataset de `openfootball/football.json` ejecutando:
+
+```bash
+.venv/bin/python scripts/download_openfootball_dataset.py
+```
+
+El script descarga el repositorio público y copia su estructura de dataset dentro de `database/matches`.
+
 ### Estructura
 
 - [server/main.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/server/main.py): arranque de la API, middleware y `healthcheck`.
@@ -19,6 +29,7 @@ Esto repositorio aloja el proyecto final de la materia Redes de Datos de la Tecn
 - [server/rate_limit_store.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/server/rate_limit_store.py): estado mutable del rate limit.
 - [client/main.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/client/main.py): cliente web simple.
 - [client/config.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/client/config.py): URL base del servidor API.
+- [scripts/download_openfootball_dataset.py](/Users/marianodorda/Documents/Personal/Facultad/TUIA/IA3.5.%20Redes%20de%20Datos/TP/scripts/download_openfootball_dataset.py): descarga e instala el dataset.
 - `database/matches/`: archivos JSON de competencias y partidos.
 
 ## Servidor API
