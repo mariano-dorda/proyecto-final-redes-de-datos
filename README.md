@@ -14,7 +14,7 @@ La carpeta `database/matches` no debe versionarse en Git. Para utilizar la API y
 .venv/bin/python scripts/download_openfootball_dataset.py
 ```
 
-El script descarga el repositorio público, extrae su carpeta `matches` y la copia en `database/matches`.
+El script descarga el repositorio público y copia su estructura de dataset dentro de `database/matches`.
 
 ### Estructura
 

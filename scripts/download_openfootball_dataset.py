@@ -22,8 +22,8 @@ TARGET_DIR = PROJECT_DIR / "database" / "matches"
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Descarga el repositorio openfootball/football.json y copia su "
-            "carpeta matches dentro de database/matches."
+            "Descarga el repositorio openfootball/football.json e instala el "
+            "dataset dentro de database/matches."
         )
     )
     parser.add_argument(
@@ -62,11 +62,23 @@ def extract_archive(archive_path: Path, destination: Path) -> Path:
         raise RuntimeError("No se encontró contenido extraído en el archivo ZIP.")
 
     repository_root = extracted_roots[0]
-    source_matches_dir = repository_root / "matches"
-    if not source_matches_dir.exists():
-        raise RuntimeError("El repositorio descargado no contiene la carpeta matches.")
+    source_matches_dir = resolve_dataset_dir(repository_root)
 
     return source_matches_dir
+
+
+def resolve_dataset_dir(repository_root: Path) -> Path:
+    nested_matches_dir = repository_root / "matches"
+    if nested_matches_dir.is_dir():
+        return nested_matches_dir
+
+    json_files = list(repository_root.glob("*/*.json"))
+    if json_files:
+        return repository_root
+
+    raise RuntimeError(
+        "El repositorio descargado no contiene una estructura de dataset reconocible."
+    )
 
 
 def replace_dataset(source_matches_dir: Path, target_dir: Path) -> None:
