@@ -266,7 +266,7 @@ def build_pagination_html(
     return f'<div class="pager"><span>Mostrando {start} a {end} de {total_count} resultado(s).</span>{prev_form}{next_form}</div>'
 
 
-def build_result_html(*, method: str, url: str, response: requests.Response, body: str | None = None, pagination_html: str = "") -> str:
+def build_result_html(*, method: str, url: str, response: requests.Response, body: str | None = None, pagination_html: str = "", success_message: str = "") -> str:
     headers_text = "\n".join(f"{k}: {v}" for k, v in response.headers.items())
     try:
         response_json = response.json()
@@ -278,7 +278,9 @@ def build_result_html(*, method: str, url: str, response: requests.Response, bod
     request_body = body if body else "(sin body)"
     return (
         f'<div class="box"><h2>Resultado</h2><div class="box-body"><div class="result-title">{html.escape(method)} {html.escape(url)}</div>'
-        f'<p><strong>Status:</strong> {response.status_code}</p>{pagination_html}{preview_html}'
+        f'<p><strong>Status:</strong> {response.status_code}</p>'
+        f'{f"<p><strong>{html.escape(success_message)}</strong></p>" if success_message else ""}'
+        f'{pagination_html}{preview_html}'
         f'<details><summary>Ver detalles técnicos de la respuesta</summary>'
         f'<p><strong>Request body:</strong></p><pre>{html.escape(request_body)}</pre>'
         f'<p><strong>Response headers:</strong></p><pre>{html.escape(headers_text)}</pre>'
@@ -498,7 +500,10 @@ def match_delete_action(request: Request, season: str = Form(...), league: str =
         response = perform_request(method="DELETE", api_base_url=settings["api_base_url"], path=path, username=settings["username"], password=settings["password"])
     except requests.RequestException as exc:
         return render_error("/match-delete", "Quitar Partido", form_html, request, str(exc))
-    result = build_result_html(method="DELETE", url=f'{settings["api_base_url"].rstrip("/")}{path}', response=response)
+    success_message = ""
+    if response.status_code == 204:
+        success_message = f"El partido con ID {match_id} fue eliminado correctamente."
+    result = build_result_html(method="DELETE", url=f'{settings["api_base_url"].rstrip("/")}{path}', response=response, success_message=success_message)
     return render_page("/match-delete", "Quitar Partido", form_html, request, result)
 
 

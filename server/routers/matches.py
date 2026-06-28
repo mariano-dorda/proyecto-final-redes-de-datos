@@ -1,3 +1,4 @@
+import re
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
@@ -8,6 +9,29 @@ from ..schemas import Match, MatchCreate, MatchUpdate
 
 
 router = APIRouter(prefix="/competitions/{season}/{league}/matches", tags=["matches"])
+
+
+def normalize_round(value: str) -> str:
+    normalized = value.strip().lower()
+    match = re.search(r"(\d+)$", normalized)
+    return match.group(1) if match else normalized
+
+
+def validate_score_progression(score: dict) -> None:
+    ht_score = score.get("ht", [])
+    ft_score = score.get("ft", [])
+
+    if len(ht_score) < 2 or len(ft_score) < 2:
+        return
+
+    if ht_score[0] > ft_score[0] or ht_score[1] > ft_score[1]:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=(
+                "El marcador del primer tiempo no puede superar al marcador final "
+                "para ninguno de los dos equipos."
+            ),
+        )
 
 
 @router.get("", response_model=list[Match])
@@ -33,8 +57,12 @@ def list_matches(
             if team_lower in match.team1.lower() or team_lower in match.team2.lower()
         ]
     if round_name:
-        round_lower = round_name.lower()
-        matches = [match for match in matches if round_lower in match.round.lower()]
+        normalized_round = normalize_round(round_name)
+        matches = [
+            match
+            for match in matches
+            if normalize_round(match.round) == normalized_round
+        ]
     if date:
         matches = [match for match in matches if match.date == date]
 
@@ -67,6 +95,7 @@ def create_match(
     match: MatchCreate,
     _: Annotated[str, Depends(require_basic_auth)],
 ):
+    validate_score_progression(match.score.model_dump())
     path = get_competition_path(season, league)
     payload = read_competition(path)
     raw_matches = payload.setdefault("matches", [])
@@ -99,6 +128,7 @@ def update_match(
     if "score" in changes:
         current_score = dict(current_match.get("score", {}))
         current_score.update(changes["score"])
+        validate_score_progression(current_score)
         changes["score"] = current_score
 
     updated_match = dict(current_match)
