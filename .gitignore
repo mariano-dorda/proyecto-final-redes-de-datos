@@ -219,8 +219,6 @@ __marimo__/
 
 # Databases
 database/
-databases/
-cliente/database/
 
 # MacOS
 .DS_Store
